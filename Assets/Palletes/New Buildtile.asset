@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a65ce7b5f01ecc439a4859790622d12, type: 3}
   m_Name: New Buildtile
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 27ce2af58dfd0a64ca3c14e806bee5ef, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1

@@ -5,20 +5,52 @@ using UnityEngine.Tilemaps;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField]
-    private Tilemap baseLayer;
+    public static GameManager instance = null;
 
     [SerializeField]
-    private Tilemap pathLayer;
+    private Tilemap tilemap;
+
+    [SerializeField]
+    private GameObject spawnPoint;
+
+    [SerializeField]
+    private GameObject[] enemies;
+
+    [SerializeField]
+    private int maxEnemiesAlive;
+
+    [SerializeField]
+    private int totalEnemies;
+
+    [SerializeField]
+    private int enemiesPerSpawn;
+
+    private int enemiesAlive = 0;
 
     private List<Vector2Int> buildLocations = new List<Vector2Int>();
-    public void Start()
+
+    private void Awake()
     {
-        if(baseLayer != null)
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
+        }
+
+        DontDestroyOnLoad(gameObject);
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        if (tilemap != null)
         {
             // get build spots
-            var bounds = baseLayer.cellBounds;
-            var cells = baseLayer.GetTilesBlock(bounds);
+            var bounds = tilemap.cellBounds;
+            var cells = tilemap.GetTilesBlock(bounds);
 
             Debug.Log("Bounds: ");
             Debug.Log(bounds);
@@ -38,10 +70,43 @@ public class GameManager : MonoBehaviour
                         Debug.Log("Position");
                         Debug.Log(position);
 
+                    } else if(cell is WalkableTile)
+                    {
+                        Debug.Log("Found walkable tile");
+                        Debug.Log(cell);
+
+                        var position = new Vector2Int(x + bounds.xMin, y + bounds.yMin);
+
+                        Debug.Log("Position");
+                        Debug.Log(position);
                     }
                 }
             }
 
         }
+
+        //SpawnEnemy();
+    }
+
+    void SpawnEnemy()
+    {
+        if (enemiesPerSpawn > 0 && enemiesAlive < totalEnemies)
+        {
+            for (var i = 0; i < enemiesPerSpawn; i++)
+            {
+                if (enemiesAlive < maxEnemiesAlive)
+                {
+                    var newEnemey = Instantiate(enemies[0]);
+
+                    newEnemey.transform.position = spawnPoint.transform.position;
+                    enemiesAlive++;
+                }
+            }
+        }
+    }
+
+    public void removeEnemy()
+    {
+        if (enemiesAlive > 0) enemiesAlive--;
     }
 }
