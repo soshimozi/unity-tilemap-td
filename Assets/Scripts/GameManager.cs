@@ -1,63 +1,47 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
-namespace TowerDefense2D
+public class GameManager : MonoBehaviour
 {
-    public class GameManager : MonoBehaviour
+    [SerializeField]
+    private Tilemap baseLayer;
+
+    [SerializeField]
+    private Tilemap pathLayer;
+
+    private List<Vector2Int> buildLocations = new List<Vector2Int>();
+    public void Start()
     {
-        public static GameManager instance = null;
-
-        public GameObject spawnPoint;
-        public GameObject[] enemies;
-
-        public int maxEnemiesAlive;
-        public int totalEnemies;
-        public int enemiesPerSpawn;
-
-        private int enemiesAlive = 0;
-
-        private void Awake()
+        if(baseLayer != null)
         {
-            if (instance == null)
-            {
-                instance = this;
-            }
-            else if (instance != this)
-            {
-                Destroy(gameObject);
-            }
+            // get build spots
+            var bounds = baseLayer.cellBounds;
+            var cells = baseLayer.GetTilesBlock(bounds);
 
-            DontDestroyOnLoad(gameObject);
-        }
-
-        // Start is called before the first frame update
-        void Start()
-        {
-            SpawnEnemy();
-        }
-
-        void SpawnEnemy()
-        {
-            if (enemiesPerSpawn > 0 && enemiesAlive < totalEnemies)
+            Debug.Log("Bounds: ");
+            Debug.Log(bounds);
+            for (int x = 0; x < bounds.size.x; x++)
             {
-                for (var i = 0; i < enemiesPerSpawn; i++)
+                for (int y = 0; y < bounds.size.y; y++)
                 {
-                    if (enemiesAlive < maxEnemiesAlive)
-                    {
-                        var newEnemey = Instantiate(enemies[0]);
+                    var cell = cells[x + y * bounds.size.x];
 
-                        newEnemey.transform.position = spawnPoint.transform.position;
-                        enemiesAlive++;
+                    if (cell is BuildTile)
+                    {
+                        Debug.Log("Found build tile");
+                        Debug.Log(cell);
+
+                        var position = new Vector2Int(x + bounds.xMin, y + bounds.yMin);
+
+                        Debug.Log("Position");
+                        Debug.Log(position);
+
                     }
                 }
             }
-        }
 
-        public void removeEnemy()
-        {
-            if (enemiesAlive > 0) enemiesAlive--;
         }
-
     }
 }
