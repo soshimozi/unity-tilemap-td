@@ -150,11 +150,6 @@ namespace TowerDefense
 
         private EnemyAI AddEnemyToMap()
         {
-            var cellWorldLocation = tilemap.GetCellCenterWorld(new Vector3Int(startPoint.x, startPoint.y, 0));
-
-            Debug.Log(cellWorldLocation);
-            Debug.Log(navigationPath.First.Value);
-
             var enemyInstance = Instantiate(enemies[1]);
 
             // move to spawn point
